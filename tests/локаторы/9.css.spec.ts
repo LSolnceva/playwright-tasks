@@ -11,7 +11,7 @@ test.describe('Продвинутые CSS-селекторы', () => {
     //    - Содержит текст "Смартфон"
     //    - Цена меньше 50 000 ₽
     const featuredSmartphone = page.locator(
-      '.product-card.featured:has-text("Смартфон") .price-value',
+      '.product-card.featured:has-text("Смартфон").price-value',
     );
     await expect(featuredSmartphone).toHaveText('49 999');
 
@@ -19,8 +19,8 @@ test.describe('Продвинутые CSS-селекторы', () => {
     //    - Является прямой дочерней элементом формы
     //    - Имеет класс btn и submit-btn
     //    - Не disabled
-    const submitButton = page.locator('[data-todo="submitButton"]'); // TODO(student): замените на корректный локатор
-      await expect(submitButton).toBeEnabled();
+    const submitButton = page.getByRole('button', { name: 'В корзину' }).nth(1); // TODO(student): замените на корректный локатор
+    await expect(submitButton).toBeEnabled();
   });
 });
 
@@ -34,27 +34,31 @@ test.describe('Динамический контент с условиями', (
     //    - Имеет класс disabled
     //    - Содержит текст "Недоступно"
     //    - Не имеет атрибута type="submit"
-    const dynamicButton = page.locator('[data-todo="dynamicButton"]'); // TODO(student): замените на корректный локатор
-      await expect(dynamicButton).toBeVisible({ timeout: 2000 });
+    const dynamicButton = page.getByRole('button', { name: 'Недоступно' }); // TODO(student): замените на корректный локатор
+    await expect(dynamicButton).toBeVisible({ timeout: 2000 });
 
     // 2. Найти динамический товар, который:
     //    - Цена меньше 10 000 ₽
     //    - Не является рекомендуемым (featured)
-    const cheapProduct = page.locator('[data-todo="cheapProduct"]'); // TODO(student): замените на корректный локатор
-      await expect(cheapProduct).toHaveText('9 999');
+    const cheapProduct = page.getByText('Новый товар'); // TODO(student): замените на корректный локатор
+    await expect(cheapProduct).toHaveText('9 999');
   });
 
   test('Комбинации с :has и :not', async ({ page }) => {
     // 1. Найти все карточки, которые:
     //    - Не имеют класс sold-out
     //    - Содержат кнопку с текстом "В корзину"
-    const availableProducts = page.locator('[data-todo="availableProducts"]'); // TODO(student): замените на корректный локатор
-      await expect(availableProducts).toHaveCount(2);
+    //const availableProducts = page.getByRole('button', { name: 'В корзину' }); // TODO(student): замените на корректный локатор
+    const availableProducts = page.locator(
+      '.product-card:not(.sold-out):has(button:has-text("В корзину"))',
+    );
+    await expect(availableProducts).toHaveCount(2);
+    //const availableProducts = page.locator('.product-card:not(.sold-out):has(button:has-text("В корзину"))
 
     // 2. Найти ячейки таблицы, которые:
     //    - В строках с активными пользователями
     //    - Не являются ячейками с email
-    const activeUserCells = page.locator('[data-todo="activeUserCells"]'); // TODO(student): замените на корректный локатор
-      await expect(activeUserCells).toHaveCount(3); // ID, Имя, Статус
+    const activeUserCells = page.getByRole('cell', { name: 'Активен', exact: true }); // TODO(student): замените на корректный локатор
+    await expect(activeUserCells).toHaveCount(3); // ID, Имя, Статус
   });
 });
