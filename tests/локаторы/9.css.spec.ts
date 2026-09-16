@@ -11,7 +11,7 @@ test.describe('Продвинутые CSS-селекторы', () => {
     //    - Содержит текст "Смартфон"
     //    - Цена меньше 50 000 ₽
     const featuredSmartphone = page.locator(
-      '.product-card.featured:has-text("Смартфон").price-value',
+      '.product-card.featured:has-text("Смартфон") .price-value',
     );
     await expect(featuredSmartphone).toHaveText('49 999');
 
@@ -40,7 +40,9 @@ test.describe('Динамический контент с условиями', (
     // 2. Найти динамический товар, который:
     //    - Цена меньше 10 000 ₽
     //    - Не является рекомендуемым (featured)
-    const cheapProduct = page.getByText('Новый товар'); // TODO(student): замените на корректный локатор
+    const cheapProduct = page.locator(
+      '.product-card:not(.featured):has-text("Новый товар") .price-value',
+    );
     await expect(cheapProduct).toHaveText('9 999');
   });
 
@@ -58,7 +60,9 @@ test.describe('Динамический контент с условиями', (
     // 2. Найти ячейки таблицы, которые:
     //    - В строках с активными пользователями
     //    - Не являются ячейками с email
-    const activeUserCells = page.getByRole('cell', { name: 'Активен', exact: true }); // TODO(student): замените на корректный локатор
+    const activeUserCells = page.locator(
+      'tr:has(td:has-text("Активен")) td:not([data-label="Email"])',
+    );
     await expect(activeUserCells).toHaveCount(3); // ID, Имя, Статус
   });
 });
